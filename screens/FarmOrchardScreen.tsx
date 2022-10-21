@@ -67,9 +67,7 @@ export default function FarmOrchardScreen(props) {
     // split the blank spaces into double quotes     
     let arr = lonlat.split(' ');
 
-   // const [first] = arr
-   //  console.log(first)
-
+  
     try{
       // maping the array to return the interger values of latitude and longitude   
        const geoCoordinates = arr.map(coordsArr => { 
@@ -84,8 +82,7 @@ export default function FarmOrchardScreen(props) {
        });
        const [initialregion] = geoCoordinates
        setInitialLat(initialregion);
-      // let t = Object.values(geoCoordinates.latitude);
-       console.log("init", initialregion)
+    
        setCoordinates(geoCoordinates); 
        }
         catch(err) {
@@ -93,8 +90,7 @@ export default function FarmOrchardScreen(props) {
         }      
 
   }
-
-    console.log('ludmil', initialRegion)  
+ 
 
   useEffect(() => {
     getOrchards();
