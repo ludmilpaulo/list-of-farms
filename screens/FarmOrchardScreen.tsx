@@ -27,6 +27,15 @@ export default function FarmOrchardScreen(props) {
 
   const [ initialLon, setInitialLat ] = useState(0)
 
+  const initalCoordinates = initialLon;
+
+    const initialRegion = {
+        latitude: initalCoordinates.latitude,                     
+        longitude: initalCoordinates.longitude, 
+        latitudeDelta: 0.005,
+        longitudeDelta: 0.005,
+    }
+
 
 
   const access_token = "1566394169B0EJX2MGAVKVUGGKEMKZBMND9A7VCR";
@@ -85,7 +94,7 @@ export default function FarmOrchardScreen(props) {
 
   }
 
-      
+    console.log('ludmil', initialRegion)  
 
   useEffect(() => {
     getOrchards();
@@ -103,12 +112,7 @@ export default function FarmOrchardScreen(props) {
         <View style={styles.container}>
             <MapView
              mapType="satellite"
-             initialRegion={{
-                latitude: -32.32741477565738,
-                longitude: 18.82696840753681,
-                latitudeDelta: 0.0522,
-                longitudeDelta: 0.0521,
-              }}
+             initialRegion={initialRegion}
              style={styles.map} >
 
             <Polyline
@@ -117,9 +121,9 @@ export default function FarmOrchardScreen(props) {
               strokeColors={['#7F0000']}
               strokeWidth={10}
              />
-
+          
             </MapView>
-
+      <View style={tailwind` pt-40 `}>
            <TouchableOpacity
          onPress={() => navigation.navigate("FarmListScreen")}
           style={
@@ -130,7 +134,7 @@ export default function FarmOrchardScreen(props) {
           Let&#39;s find your Ochard
           </Text>
         </TouchableOpacity> 
-
+</View>
         </View>
 
      
