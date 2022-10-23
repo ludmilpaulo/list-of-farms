@@ -1,9 +1,8 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import MapView, { Marker, PROVIDER_GOOGLE, Polyline } from 'react-native-maps'
 import { View, StyleSheet, Dimensions, Platform, Image, TouchableOpacity, Text } from 'react-native';
 import tailwind from 'tailwind-react-native-classnames';
-import { useRoute } from '@react-navigation/native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useIsFocused, useRoute } from '@react-navigation/native';
 
 
 import axios from 'axios';
@@ -12,6 +11,8 @@ import axios from 'axios';
 export default function FarmOrchardScreen(props) {
 
   const GOOGLE_MAPS_APIKEY = 'AIzaSyBBkDvVVuQBVSMOt8wQoc_7E-2bvDh2-nw';
+
+  const isFocused = useIsFocused();
 
   const navigation = useNavigation();
 
@@ -35,6 +36,20 @@ export default function FarmOrchardScreen(props) {
         latitudeDelta: 0.005,
         longitudeDelta: 0.005,
     }
+
+
+    useEffect(() => {
+      console.log("called");
+
+      // Call only when screen open or when back on screen 
+      if(isFocused){ 
+        getOrchards();
+        getLatLon();
+      }
+  }, [props, isFocused, getOrchards, getLatLon]);
+
+
+    
 
 
 
@@ -92,16 +107,6 @@ export default function FarmOrchardScreen(props) {
   }
  
 
-  useEffect(() => {
-    getOrchards();
-    getLatLon();
-
-       //  const timer = setInterval(() =>  getLatLon()
-
-     //    , 1000);
-     //  return () => clearInterval(timer);
-        
-    },[]);
 
   return (
     <View style={tailwind`flex-1 bg-white`}>
