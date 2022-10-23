@@ -29,7 +29,7 @@ export default function FarmOrchardScreen(props) {
 
   const initalCoordinates = initialLon;
 
-    const initialRegion = {
+    const initial = {
         latitude: initalCoordinates.latitude,                     
         longitude: initalCoordinates.longitude, 
         latitudeDelta: 0.005,
@@ -94,13 +94,14 @@ export default function FarmOrchardScreen(props) {
 
   useEffect(() => {
     getOrchards();
+    getLatLon();
 
-         const timer = setInterval(() =>  getLatLon()
+       //  const timer = setInterval(() =>  getLatLon()
 
-         , 1000);
-       return () => clearInterval(timer);
+     //    , 1000);
+     //  return () => clearInterval(timer);
         
-    }, [getLatLon]);
+    },[]);
 
   return (
     <View style={tailwind`flex-1 bg-white`}>
@@ -108,7 +109,7 @@ export default function FarmOrchardScreen(props) {
         <View style={styles.container}>
             <MapView
              mapType="satellite"
-             initialRegion={initialRegion}
+             region={initial}
              style={styles.map} >
 
             <Polyline
@@ -119,7 +120,7 @@ export default function FarmOrchardScreen(props) {
              />
           
             </MapView>
-      <View style={tailwind` pt-40 `}>
+      <View>
            <TouchableOpacity
          onPress={() => navigation.navigate("FarmListScreen")}
           style={
