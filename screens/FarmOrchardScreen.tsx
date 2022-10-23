@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import MapView, { Marker, PROVIDER_GOOGLE, Polyline } from 'react-native-maps'
+import MapView, { PROVIDER_GOOGLE, Polyline } from 'react-native-maps'
 import { View, StyleSheet, Dimensions, Platform, Image, TouchableOpacity, Text } from 'react-native';
 import tailwind from 'tailwind-react-native-classnames';
 import { useNavigation, useIsFocused, useRoute } from '@react-navigation/native';
@@ -38,15 +38,7 @@ export default function FarmOrchardScreen(props) {
     }
 
 
-    useEffect(() => {
-      console.log("called");
-
-      // Call only when screen open or when back on screen 
-      if(isFocused){ 
-        getOrchards();
-        getLatLon();
-      }
-  }, []);
+  
 
 
     
@@ -89,8 +81,8 @@ export default function FarmOrchardScreen(props) {
           
     
             return {
-              longitude : Number(longitude),
-              latitude : Number(latitude),
+              longitude : parseFloat(longitude),
+              latitude : parseFloat(latitude),
             }
        });
        const [initialregion] = geoCoordinates
@@ -103,6 +95,15 @@ export default function FarmOrchardScreen(props) {
         }      
 
   }
+
+  
+  useEffect(() => {
+    console.log("called mal");
+    // Call only when screen open or when back on screen 
+      getOrchards();
+      getLatLon();
+
+},[]);
  
 
 
