@@ -28,6 +28,8 @@ export default function FarmOrchardScreen(props) {
 
   const [ initialLon, setInitialLat ] = useState(0)
 
+  const [loading, setLoading] = useState(true);
+
   const initalCoordinates = initialLon;
 
     const initial = {
@@ -36,12 +38,7 @@ export default function FarmOrchardScreen(props) {
         latitudeDelta: 0.005,
         longitudeDelta: 0.005,
     }
-
-
-  
-
-
-    
+ 
   const access_token = "1566394169B0EJX2MGAVKVUGGKEMKZBMND9A7VCR";
 
 
@@ -54,13 +51,19 @@ export default function FarmOrchardScreen(props) {
               })
               .then((res) => {
                setOrchardData(res.data.results);
+
+               setTimeout(() => {
+
+                getLatLon();
+              }, 2000)
+
+
                })
               .catch((error) => {
               console.error(error)
               })
           return res;
   }
-
 
 
      
@@ -72,14 +75,11 @@ export default function FarmOrchardScreen(props) {
     // split the blank spaces into double quotes     
     let arr = lonlat.split(' ');
 
-  
     try{
       // maping the array to return the interger values of latitude and longitude   
        const geoCoordinates = arr.map(coordsArr => { 
             const longitude = coordsArr.split(',')[0];
             const latitude = coordsArr.split(',')[1];
-          
-    
             return {
               longitude : parseFloat(longitude),
               latitude : parseFloat(latitude),
@@ -90,22 +90,26 @@ export default function FarmOrchardScreen(props) {
     
        setCoordinates(geoCoordinates); 
        }
-        catch(err) {
+       catch(err) {
           console.log(err)
         }      
 
   }
 
-  
   useEffect(() => {
-    console.log("called mal");
-    // Call only when screen open or when back on screen 
-      getOrchards();
-      getLatLon();
 
-},[]);
+    getOrchards();
+
+  },[]);
  
-
+useEffect(() => {
+    
+    const timer = setInterval(() =>  getLatLon()
+         , 1000);
+       return () => clearInterval(timer);
+     
+},[getLatLon]);
+ 
 
   return (
     <View style={tailwind`flex-1 bg-white`}>
@@ -125,7 +129,7 @@ export default function FarmOrchardScreen(props) {
           
             </MapView>
       <View>
-           <TouchableOpacity
+      <TouchableOpacity
          onPress={() => navigation.navigate("FarmListScreen")}
           style={
             tailwind`h-10 w-full bg-white rounded-full items-center justify-center border border-blue-500 `
