@@ -46,19 +46,16 @@ export default function FarmOrchardScreen(props) {
         getOrchards();
         getLatLon();
       }
-  }, [props, isFocused, getOrchards, getLatLon]);
+  }, []);
 
 
     
-
-
-
   const access_token = "1566394169B0EJX2MGAVKVUGGKEMKZBMND9A7VCR";
 
 
 
   const getOrchards = async () => {
-      axios.get(`https://sherlock.aerobotics.com/developers/orchards/?farm_id=${id}`, {
+    const res = await  axios.get(`https://sherlock.aerobotics.com/developers/orchards/?farm_id=${id}`, {
             headers: {
                 'Authorization': `${access_token}`
               }
@@ -69,6 +66,7 @@ export default function FarmOrchardScreen(props) {
               .catch((error) => {
               console.error(error)
               })
+          return res;
   }
 
 
