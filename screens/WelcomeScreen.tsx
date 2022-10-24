@@ -24,7 +24,7 @@ export default function WelcomeScreen() {
           }
         >
           <Text style={tailwind`text-lg text-blue-500 font-bold`}>
-          Let&#39;s find your Ochard
+          Let&#39;s find your Farm
           </Text>
         </TouchableOpacity>
     </View>

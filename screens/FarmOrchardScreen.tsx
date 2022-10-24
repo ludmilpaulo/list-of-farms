@@ -52,10 +52,7 @@ export default function FarmOrchardScreen(props) {
               .then((res) => {
                setOrchardData(res.data.results);
 
-               setTimeout(() => {
-
-                getLatLon();
-              }, 2000)
+              console.log("darta ==>", res.data.results)
 
 
                })
@@ -83,8 +80,9 @@ export default function FarmOrchardScreen(props) {
             return {
               longitude : parseFloat(longitude),
               latitude : parseFloat(latitude),
-            }
+            }  
        });
+      // return geoCoordinates;
        const [initialregion] = geoCoordinates
        setInitialLat(initialregion);
     
@@ -99,17 +97,11 @@ export default function FarmOrchardScreen(props) {
   useEffect(() => {
 
     getOrchards();
+    getLatLon();
 
   },[]);
  
-useEffect(() => {
-    
-    const timer = setInterval(() =>  getLatLon()
-         , 1000);
-       return () => clearInterval(timer);
-     
-},[getLatLon]);
- 
+
 
   return (
     <View style={tailwind`flex-1 bg-white`}>
@@ -130,13 +122,13 @@ useEffect(() => {
             </MapView>
       <View>
       <TouchableOpacity
-         onPress={() => navigation.navigate("FarmListScreen")}
+         onPress={getLatLon}
           style={
             tailwind`h-10 w-full bg-white rounded-full items-center justify-center border border-blue-500 `
           }
         >
           <Text style={tailwind`text-lg text-blue-500 font-bold`}>
-          Let&#39;s find your Ochard
+          Click to View {name} Orchards
           </Text>
         </TouchableOpacity> 
 </View>
