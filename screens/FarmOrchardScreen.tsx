@@ -22,24 +22,25 @@ export default function FarmOrchardScreen(props) {
 
   const { id, client_id, name  } = props.route.params;
 
-  const [ orchardData, setOrchardData ] = useState();
+  const [ orchardData, setOrchardData ] = useState([]);
 
-  const [ coordinate, setCoordinates ] = useState([]);
+    
+  const access_token = "1566394169B0EJX2MGAVKVUGGKEMKZBMND9A7VCR";
 
-  const [ initialLon, setInitialLat ] = useState(0)
+  const [ coordinatePoints, setCoordinatePoints] = useState([]);
 
-  const [loading, setLoading] = useState(true);
 
-  const initalCoordinates = initialLon;
+  const [startingPoint] = coordinatePoints;
 
-    const initial = {
-        latitude: initalCoordinates.latitude,                     
-        longitude: initalCoordinates.longitude, 
+ 
+  const startCoordinates = {
+
+        latitude: startingPoint?.latitude,                     
+        longitude: startingPoint?.longitude, 
         latitudeDelta: 0.005,
         longitudeDelta: 0.005,
-    }
- 
-  const access_token = "1566394169B0EJX2MGAVKVUGGKEMKZBMND9A7VCR";
+
+  }
 
 
 
@@ -52,9 +53,6 @@ export default function FarmOrchardScreen(props) {
               .then((res) => {
                setOrchardData(res.data.results);
 
-              console.log("darta ==>", res.data.results)
-
-
                })
               .catch((error) => {
               console.error(error)
@@ -63,7 +61,42 @@ export default function FarmOrchardScreen(props) {
   }
 
 
-     
+
+ 
+  const getBoundaris = async () =>{
+
+
+// filter the polygon properties from the Object
+ const geoReference = Object.keys(orchardData).reduce((result, key) => {
+  return result.concat(orchardData[key].polygon.split(' '));
+}, [])
+
+const lonlat = geoReference.map((coordsArr) => { 
+            const longitude = coordsArr.split(',')[0];
+            const latitude = coordsArr.split(',')[1];
+            return {
+              longitude : parseFloat(longitude),
+              latitude : parseFloat(latitude),
+            }
+        },);
+        setCoordinatePoints(lonlat);
+
+      }
+
+
+console.log('start', coordinatePoints)
+        
+useEffect(()=> {
+
+  getOrchards();
+
+  getBoundaris();
+
+ 
+
+}, [])  
+
+  /*   
   const getLatLon = async () => {
      //Converting array of Object to object 
     const output = Object.assign({}, ...orchardData)
@@ -74,14 +107,14 @@ export default function FarmOrchardScreen(props) {
 
     try{
       // maping the array to return the interger values of latitude and longitude   
-       const geoCoordinates = arr.map(coordsArr => { 
+       const geoCoordinates = arr.map((coordsArr) => { 
             const longitude = coordsArr.split(',')[0];
             const latitude = coordsArr.split(',')[1];
             return {
               longitude : parseFloat(longitude),
               latitude : parseFloat(latitude),
             }  
-       });
+       }, []);
       // return geoCoordinates;
        const [initialregion] = geoCoordinates
        setInitialLat(initialregion);
@@ -93,13 +126,8 @@ export default function FarmOrchardScreen(props) {
         }      
 
   }
+  */
 
-  useEffect(() => {
-
-    getOrchards();
-    getLatLon();
-
-  },[]);
  
 
 
@@ -109,11 +137,11 @@ export default function FarmOrchardScreen(props) {
         <View style={styles.container}>
             <MapView
              mapType="satellite"
-             region={initial}
+             region={startCoordinates}
              style={styles.map} >
 
             <Polyline
-              coordinates={coordinate}
+              coordinates={coordinatePoints}
               strokeColor="#FFFFFF"
               strokeColors={['#7F0000']}
               strokeWidth={10}
@@ -122,7 +150,7 @@ export default function FarmOrchardScreen(props) {
             </MapView>
       <View>
       <TouchableOpacity
-         onPress={getLatLon}
+        onPress={getBoundaris}
           style={
             tailwind`h-10 w-full bg-white rounded-full items-center justify-center border border-blue-500 `
           }
