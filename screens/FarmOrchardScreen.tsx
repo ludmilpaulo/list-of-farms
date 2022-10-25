@@ -84,7 +84,7 @@ const lonlat = geoReference.map((coordsArr) => {
       }
 
 
-console.log('start', coordinatePoints)
+//console.log('start', coordinatePoints)
         
 useEffect(()=> {
 
