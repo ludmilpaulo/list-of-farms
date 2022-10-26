@@ -12,3 +12,10 @@ run the app <br>
 ## Screashoots
 
 ![alt textr](./assets/1.png)
+
+![alt textr](./assets/2.png)
+
+### NB: you should click to trigger the orchard 
+![alt textr](./assets/3.png)
+
+![alt textr](./assets/4.png)
