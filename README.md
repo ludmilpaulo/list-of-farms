@@ -11,4 +11,4 @@ run the app <br>
 
 ## Screashoots
 
-![CHEESE]!(/assets/1.png)
+![CHEESE]!(./assets/1.png)
