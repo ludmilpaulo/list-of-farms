@@ -42,8 +42,6 @@ export default function FarmOrchardScreen(props) {
 
   }
 
-
-
   const getOrchards = async () => {
     const res = await  axios.get(`https://sherlock.aerobotics.com/developers/orchards/?farm_id=${id}`, {
             headers: {
@@ -59,9 +57,6 @@ export default function FarmOrchardScreen(props) {
               })
           return res;
   }
-
-
-
  
   const getBoundaris = async () =>{
 
@@ -83,8 +78,6 @@ const lonlat = geoReference.map((coordsArr) => {
 
       }
 
-
-//console.log('start', coordinatePoints)
         
 useEffect(()=> {
 
@@ -92,44 +85,7 @@ useEffect(()=> {
 
   getBoundaris();
 
- 
-
 }, [])  
-
-  /*   
-  const getLatLon = async () => {
-     //Converting array of Object to object 
-    const output = Object.assign({}, ...orchardData)
-    // getting the value of latitude and longitude from the polygon key/property
-    let lonlat = output.polygon;
-    // split the blank spaces into double quotes     
-    let arr = lonlat.split(' ');
-
-    try{
-      // maping the array to return the interger values of latitude and longitude   
-       const geoCoordinates = arr.map((coordsArr) => { 
-            const longitude = coordsArr.split(',')[0];
-            const latitude = coordsArr.split(',')[1];
-            return {
-              longitude : parseFloat(longitude),
-              latitude : parseFloat(latitude),
-            }  
-       }, []);
-      // return geoCoordinates;
-       const [initialregion] = geoCoordinates
-       setInitialLat(initialregion);
-    
-       setCoordinates(geoCoordinates); 
-       }
-       catch(err) {
-          console.log(err)
-        }      
-
-  }
-  */
-
- 
-
 
   return (
     <View style={tailwind`flex-1 bg-white`}>
@@ -148,18 +104,17 @@ useEffect(()=> {
              />
           
             </MapView>
-      <View>
+   
       <TouchableOpacity
         onPress={getBoundaris}
           style={
-            tailwind`h-10 w-full bg-white rounded-full items-center justify-center border border-blue-500 `
+            tailwind`pb-10 w-full bg-white rounded-full items-center justify-center border border-blue-500 `
           }
         >
-          <Text style={tailwind`text-lg text-blue-500 font-bold`}>
+          <Text style={tailwind` pb-10 text-lg text-blue-500 font-bold`}>
           Click to View {name} Orchards
           </Text>
         </TouchableOpacity> 
-</View>
         </View>
 
      
