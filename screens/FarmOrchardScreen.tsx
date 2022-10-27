@@ -35,6 +35,7 @@ export default function FarmOrchardScreen() {
 
   const [startingPoint] = coordinatePoints;
 
+
   const startCoordinates = {
     latitude: startingPoint?.latitude,
     longitude: startingPoint?.longitude,
@@ -80,7 +81,6 @@ export default function FarmOrchardScreen() {
 
   useEffect(() => {
     getOrchards();
-
     getBoundaris();
   }, []);
 
