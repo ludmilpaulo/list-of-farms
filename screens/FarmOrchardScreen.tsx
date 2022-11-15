@@ -10,28 +10,25 @@ import {
 import tailwind from "tailwind-react-native-classnames";
 import {
   useNavigation,
-  useIsFocused,
   useRoute,
 } from "@react-navigation/native";
 
 import axios from "axios";
 
-export default function FarmOrchardScreen() {
+export default function FarmOrchardScreen(props:any) {
   const GOOGLE_MAPS_APIKEY = "AIzaSyBBkDvVVuQBVSMOt8wQoc_7E-2bvDh2-nw";
 
-  const isFocused = useIsFocused();
 
-  const navigation = useNavigation();
 
   const route = useRoute();
 
-  const { id, name } = route?.params;
+  const { id, name } = props?.route?.params;
 
-  const [orchardData, setOrchardData] = useState([]);
+  const [orchardData, setOrchardData] = useState<any>([]);
 
   const access_token = "1566394169B0EJX2MGAVKVUGGKEMKZBMND9A7VCR";
 
-  const [coordinatePoints, setCoordinatePoints] = useState([]);
+  const [coordinatePoints, setCoordinatePoints] = useState<any>([]);
 
   const [startingPoint] = coordinatePoints;
 
@@ -68,7 +65,7 @@ export default function FarmOrchardScreen() {
       return result.concat(orchardData[key].polygon.split(" "));
     }, []);
 
-    const lonlat = geoReference.map((coordsArr) => {
+    const lonlat = geoReference.map((coordsArr:any) => {
       const longitude = coordsArr.split(",")[0];
       const latitude = coordsArr.split(",")[1];
       return {
@@ -82,7 +79,7 @@ export default function FarmOrchardScreen() {
   useEffect(() => {
     getOrchards();
     getBoundaris();
-  }, []);
+  }, [coordinatePoints]);
 
   return (
     <View style={tailwind`flex-1 bg-white`}>

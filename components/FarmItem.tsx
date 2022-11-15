@@ -3,10 +3,10 @@ import { Image, Text, TouchableOpacity, View } from "react-native";
 import tailwind from "tailwind-react-native-classnames";
 import { useNavigation } from "@react-navigation/native";
 
-export default function FarmItem({ list }) {
-  const navigation = useNavigation();
+export default function FarmItem({ list }: { list:any }) {
+  const navigation = useNavigation<any>();
 
-  const handlePress = (item) => {
+  const handlePress = (item:any) => {
     navigation.navigate("FarmOrchardScreen", {
       item: item,
       name: item.name,
@@ -17,7 +17,7 @@ export default function FarmItem({ list }) {
 
   return (
     <View>
-      {list?.map((item, index) => (
+      {list?.map((item: any, index: any) => (
         <FarmItemCard
           key={index}
           item={item}
@@ -28,7 +28,7 @@ export default function FarmItem({ list }) {
   );
 }
 
-const FarmItemCard = ({ item, onPress }) => {
+const FarmItemCard = ({ item, onPress } : { item:any, onPress:any }) => {
   return (
     <View style={tailwind` pt-40 `}>
       <TouchableOpacity

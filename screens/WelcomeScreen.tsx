@@ -5,7 +5,7 @@ import tailwind from "tailwind-react-native-classnames";
 import { useNavigation } from "@react-navigation/native";
 
 export default function WelcomeScreen() {
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
 
   return (
     <Screen style={tailwind`flex-1`}>
@@ -21,7 +21,7 @@ export default function WelcomeScreen() {
           style={tailwind`h-10 w-full bg-white rounded-full items-center justify-center border border-blue-500 `}
         >
           <Text style={tailwind`text-lg text-blue-500 font-bold`}>
-            Let&#39;s find your Farm
+            Let'ts find your Farm
           </Text>
         </TouchableOpacity>
       </View>

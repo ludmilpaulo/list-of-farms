@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { View, Text } from "react-native";
 import tailwind from "tailwind-react-native-classnames";
-import { useNavigation } from "@react-navigation/native";
 import Screen from "../components/Screen";
 import axios from "axios";
 import FarmItem from "../components/FarmItem";
 
 export default function FarmListScreen() {
-  const navigation = useNavigation();
+
 
   const [farmData, setFarmData] = useState();
 

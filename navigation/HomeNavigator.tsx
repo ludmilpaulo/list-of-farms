@@ -13,12 +13,11 @@ export default function HomeNavigator() {
       screenOptions={{
         headerShown: false,
       }}
-    >
-      <>
+    > 
         <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} />
         <Stack.Screen name="FarmListScreen" component={FarmListScreen} />
         <Stack.Screen name="FarmOrchardScreen" component={FarmOrchardScreen} />
-      </>
+  
     </Stack.Navigator>
   );
 }
