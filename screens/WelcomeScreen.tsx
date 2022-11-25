@@ -4,8 +4,11 @@ import Screen from "../components/Screen";
 import tailwind from "tailwind-react-native-classnames";
 import { useNavigation } from "@react-navigation/native";
 
+interface IProps {
+  children: React.ReactNode;
+}
 export default function WelcomeScreen() {
-  const navigation = useNavigation<any>();
+  const navigation = useNavigation<IProps>();
 
   return (
     <Screen style={tailwind`flex-1`}>

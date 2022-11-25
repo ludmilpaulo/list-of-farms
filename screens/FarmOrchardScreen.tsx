@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import MapView, { PROVIDER_GOOGLE, Polyline } from "react-native-maps";
+import MapView, {  Polyline } from "react-native-maps";
 import {
   View,
   StyleSheet,
@@ -8,29 +8,32 @@ import {
   Text,
 } from "react-native";
 import tailwind from "tailwind-react-native-classnames";
-import {
-  useNavigation,
-  useRoute,
-} from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 
 import axios from "axios";
 
-export default function FarmOrchardScreen(props:any) {
-  const GOOGLE_MAPS_APIKEY = "AIzaSyBBkDvVVuQBVSMOt8wQoc_7E-2bvDh2-nw";
+interface Props {
+  route: any
+}
 
+export default function FarmOrchardScreen({route}: Props) {
 
+  const navigation = useNavigation<any>();
 
-  const route = useRoute();
+  const { id, name } = route?.params;
 
-  const { id, name } = props?.route?.params;
+  const [orchardData, setOrchardData] = useState<string[]>([]);
 
-  const [orchardData, setOrchardData] = useState<any>([]);
 
   const access_token = "1566394169B0EJX2MGAVKVUGGKEMKZBMND9A7VCR";
 
   const [coordinatePoints, setCoordinatePoints] = useState<any>([]);
+ 
+  const startingPoint = coordinatePoints[0];
 
-  const [startingPoint] = coordinatePoints;
+  //const [startingPoint] = coordinatePoints;
+
+  console.log('starting', startingPoint);
 
 
   const startCoordinates = {
@@ -51,7 +54,7 @@ export default function FarmOrchardScreen(props:any) {
         }
       )
       .then((res) => {
-        setOrchardData(res.data.results);
+        setOrchardData(res?.data?.results);
       })
       .catch((error) => {
         console.error(error);
@@ -59,27 +62,41 @@ export default function FarmOrchardScreen(props:any) {
     return res;
   };
 
-  const getBoundaris = async () => {
+    console.log('data collected', orchardData);
+
+  
+
+  const getBoundaries =  () => {
+   
     // filter the polygon properties from the Object
     const geoReference = Object.keys(orchardData).reduce((result, key) => {
       return result.concat(orchardData[key].polygon.split(" "));
     }, []);
 
-    const lonlat = geoReference.map((coordsArr:any) => {
-      const longitude = coordsArr.split(",")[0];
-      const latitude = coordsArr.split(",")[1];
+    const initialCoordinates = geoReference.map((coordsArr:any) => {
+      let longitude = coordsArr.split(",")[0];
+      let latitude = coordsArr.split(",")[1];
       return {
         longitude: parseFloat(longitude),
         latitude: parseFloat(latitude),
       };
-    }, []);
-    setCoordinatePoints(lonlat);
+  });
+
+    setCoordinatePoints(initialCoordinates);
   };
 
+
+
+  
+useEffect(()=>{
+  getOrchards();
+}, []);
+
+
   useEffect(() => {
-    getOrchards();
-    getBoundaris();
-  }, [coordinatePoints]);
+
+    getBoundaries();
+  }, []);
 
   return (
     <View style={tailwind`flex-1 bg-white`}>
@@ -100,11 +117,10 @@ export default function FarmOrchardScreen(props:any) {
         </MapView>
 
         <TouchableOpacity
-          onPress={getBoundaris}
+          onPress={() => navigation.navigate("FarmListScreen")}
           style={tailwind`pb-10 w-full bg-white rounded-full items-center justify-center border border-blue-500 `}
         >
-          <Text style={tailwind` pb-10 text-lg text-blue-500 font-bold`}>
-            Click to View {name} Orchards
+          <Text style={tailwind` pb-10 text-lg text-blue-500 font-bold`}>List of Farms
           </Text>
         </TouchableOpacity>
       </View>
