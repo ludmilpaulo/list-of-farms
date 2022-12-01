@@ -11,16 +11,23 @@ interface Data{
   id : number;
   client_id : number;
 }
-interface IProps {
-  navigate: string;
-}
+
+  interface Navigator {
+      navigate(arg0: string, arg1: { item: Data; name: string; id: number; client_id: number; }): unknown;
+      item: string;
+      name: string;
+      id: number;
+      client_id:number;
+   
+  }
+
 
 export default function FarmListScreen() {
 
 
   const [farmData, setFarmData] = useState<Data[]>([]);
 
-  const navigation = useNavigation<IProps>();
+  const navigation = useNavigation<Navigator>();
 
   const access_token = "1566394169B0EJX2MGAVKVUGGKEMKZBMND9A7VCR";
 
