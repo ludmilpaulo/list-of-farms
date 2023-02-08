@@ -41,6 +41,8 @@ export default function FarmOrchardScreen({route}: Props) {
 
 
   const access_token = "1566394169B0EJX2MGAVKVUGGKEMKZBMND9A7VCR";
+
+  
  
 
   const getOrchards =  () => {
@@ -94,27 +96,9 @@ export default function FarmOrchardScreen({route}: Props) {
     }
   },[coordinatePoints])
 
-  const zoomIn = () => {
-    ref.current?.getCamera().then((cam: Camera) => {
-      if (Platform.OS === 'android') {
-        cam.zoom += 1;
-      } else {
-        cam.altitude /= 2;
-      }
-      ref.current?.animateCamera(cam);
-    });
-  };
+  const startingPoint = coordinatePoints[0];
 
-  const zoomOut = () => {
-    ref.current?.getCamera().then((cam: Camera) => {
-      if (Platform.OS === 'android') {
-        cam.zoom -= 1;
-      } else {
-        cam.altitude *= 2;
-      }
-      ref.current?.animateCamera(cam);
-    });
-  };
+
 
   return (
     <View style={tailwind`flex-1`}>
@@ -124,7 +108,12 @@ export default function FarmOrchardScreen({route}: Props) {
         <MapView
           ref={ref}
           mapType="satellite"
-          // region={startCoordinates}
+          region={{
+            latitude: coordinatePoints ? coordinatePoints.latitude : 0,
+          longitude: coordinatePoints ? coordinatePoints.longitude :0 ,
+          latitudeDelta: 0.005,
+           longitudeDelta: 0.005,
+          }}
           style={tailwind`h-full w-full`}
         >
           <Polyline
@@ -139,28 +128,6 @@ export default function FarmOrchardScreen({route}: Props) {
       </View>
 
  
-              <View style={tailwind`flex items-center`}>
-          
-              <TouchableOpacity
-                
-                onPress={() => zoomOut()}
-              >
-                <Text style={{ fontSize: 20, fontWeight: "bold" }}>-</Text>
-              </TouchableOpacity>
-
-              <Text 
-             
-              style={{ fontSize: 16, fontWeight: "bold" }}>
-              zoom
-              </Text>
-
-              <TouchableOpacity
-                
-                onPress={() => zoomIn()}
-              >
-                <Text style={{ fontSize: 20, fontWeight: "bold" }}>+</Text>
-              </TouchableOpacity>
-            </View>
 
       <TouchableOpacity
           onPress={() => navigation.navigate("FarmListScreen")}
