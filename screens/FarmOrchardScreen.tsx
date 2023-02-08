@@ -1,11 +1,12 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import MapView, {  Polyline } from "react-native-maps";
+import MapView, {  Camera, Polyline } from "react-native-maps";
 import {
   View,
   StyleSheet,
   Dimensions,
   TouchableOpacity,
   Text,
+  Platform,
 } from "react-native";
 import tailwind from "tailwind-react-native-classnames";
 import { useNavigation } from "@react-navigation/native";
@@ -13,6 +14,7 @@ import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 
 interface Props {
+  [x: string]: any;
   route: any
 }
 
@@ -28,9 +30,9 @@ interface Data{
 
 export default function FarmOrchardScreen({route}: Props) {
 
-  const ref = useRef<MapView>()
+  const ref = useRef<MapView | null>(null)
 
-  const navigation = useNavigation<any>();
+  const navigation = useNavigation<Props>();
 
   const { id, name } = route?.params;
 
@@ -40,18 +42,6 @@ export default function FarmOrchardScreen({route}: Props) {
 
   const access_token = "1566394169B0EJX2MGAVKVUGGKEMKZBMND9A7VCR";
  
-  // const startingPoint = coordinatePoints[0];
-
-  //const [startingPoint] = coordinatePoints;
-
-  // console.log('starting', startingPoint);
-  
-  // const startCoordinates = {
-  //   latitude: startingPoint?.latitude,
-  //   longitude: startingPoint?.longitude,
-  //   latitudeDelta: 0.005,
-  //   longitudeDelta: 0.005,
-  // };
 
   const getOrchards =  () => {
      axios
@@ -104,16 +94,38 @@ export default function FarmOrchardScreen({route}: Props) {
     }
   },[coordinatePoints])
 
+  const zoomIn = () => {
+    ref.current?.getCamera().then((cam: Camera) => {
+      if (Platform.OS === 'android') {
+        cam.zoom += 1;
+      } else {
+        cam.altitude /= 2;
+      }
+      ref.current?.animateCamera(cam);
+    });
+  };
+
+  const zoomOut = () => {
+    ref.current?.getCamera().then((cam: Camera) => {
+      if (Platform.OS === 'android') {
+        cam.zoom -= 1;
+      } else {
+        cam.altitude *= 2;
+      }
+      ref.current?.animateCamera(cam);
+    });
+  };
+
   return (
-    <View style={tailwind`flex-1 bg-white`}>
+    <View style={tailwind`flex-1`}>
 
 
-      <View style={styles.container}>
+      <View style={tailwind`flex-1`}>
         <MapView
           ref={ref}
           mapType="satellite"
           // region={startCoordinates}
-          style={styles.map}
+          style={tailwind`h-full w-full`}
         >
           <Polyline
             coordinates={coordinatePoints}
@@ -123,27 +135,42 @@ export default function FarmOrchardScreen({route}: Props) {
           />
         </MapView>
 
-        <TouchableOpacity
+        
+      </View>
+
+ 
+              <View style={tailwind`flex items-center`}>
+          
+              <TouchableOpacity
+                
+                onPress={() => zoomOut()}
+              >
+                <Text style={{ fontSize: 20, fontWeight: "bold" }}>-</Text>
+              </TouchableOpacity>
+
+              <Text 
+             
+              style={{ fontSize: 16, fontWeight: "bold" }}>
+              zoom
+              </Text>
+
+              <TouchableOpacity
+                
+                onPress={() => zoomIn()}
+              >
+                <Text style={{ fontSize: 20, fontWeight: "bold" }}>+</Text>
+              </TouchableOpacity>
+            </View>
+
+      <TouchableOpacity
           onPress={() => navigation.navigate("FarmListScreen")}
-          style={tailwind`pb-10 w-full bg-white rounded-full items-center justify-center border border-blue-500 `}
+          style={tailwind`pb-10 w-full h-20 bg-white rounded-full items-center border border-blue-500 `}
         >
           <Text style={tailwind` pb-10 text-lg text-blue-500 font-bold`}>List of Farms
           </Text>
         </TouchableOpacity>
-      </View>
+
+
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  map: {
-    width: Dimensions.get("window").width,
-    height: Dimensions.get("window").height,
-  },
-});

@@ -5,6 +5,7 @@ import tailwind from "tailwind-react-native-classnames";
 import { useNavigation } from "@react-navigation/native";
 
 interface IProps {
+  [x: string]: any;
   children: React.ReactNode;
 }
 export default function WelcomeScreen() {
