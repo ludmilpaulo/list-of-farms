@@ -48,7 +48,7 @@ export default function FarmListScreen() {
 
   useEffect(() => {
     getFarmList();
-  }, [farmData]);
+  }, []);
 
   const handlePress = (item :Data) => {
     navigation.navigate("FarmOrchardScreen", {

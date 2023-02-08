@@ -97,6 +97,7 @@ export default function FarmOrchardScreen({route}: Props) {
   },[coordinatePoints])
 
   const startingPoint = coordinatePoints[0];
+  
 
 
 
@@ -109,7 +110,7 @@ export default function FarmOrchardScreen({route}: Props) {
           ref={ref}
           mapType="satellite"
           region={{
-            latitude: coordinatePoints ? coordinatePoints.latitude : 0,
+          latitude: coordinatePoints ? coordinatePoints.latitude : 0,
           longitude: coordinatePoints ? coordinatePoints.longitude :0 ,
           latitudeDelta: 0.005,
            longitudeDelta: 0.005,
