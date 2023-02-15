@@ -59,7 +59,7 @@ export default function FarmOrchardScreen({route}: Props) {
        setOrchardData(res?.data?.results);
       })
       .catch((error) => {
-        console.error(error);
+        console.error (error);
       });
   };
 
