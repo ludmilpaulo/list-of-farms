@@ -3,8 +3,8 @@ import { Image, Text, TouchableOpacity, View } from "react-native";
 import tailwind from "tailwind-react-native-classnames";
 import { useNavigation } from "@react-navigation/native";
 
-interface Props{
-  onPress : any;
+interface Props {
+  onPress: any;
   map: any;
   navigate: any;
   item: any;
@@ -13,10 +13,10 @@ interface Props{
   client_id: number;
 }
 
-export default function FarmItem(list : Props) {
+export default function FarmItem(list: Props) {
   const navigation = useNavigation<Props>();
 
-  const handlePress = (item:any) => {
+  const handlePress = (item: any) => {
     navigation.navigate("FarmOrchardScreen", {
       item: item,
       name: item.name,
@@ -31,13 +31,19 @@ export default function FarmItem(list : Props) {
         <FarmItemCard
           key={index}
           item={item}
-          onPress={() => handlePress(item)} map={undefined} navigate={undefined} name={""} id={0} client_id={0}        />
+          onPress={() => handlePress(item)}
+          map={undefined}
+          navigate={undefined}
+          name={""}
+          id={0}
+          client_id={0}
+        />
       ))}
     </View>
   );
 }
 
-const FarmItemCard = ({ item, onPress } : Props) => {
+const FarmItemCard = ({ item, onPress }: Props) => {
   return (
     <View style={tailwind` pt-40 `}>
       <TouchableOpacity

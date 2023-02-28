@@ -6,9 +6,7 @@ import HomeNavigator from "./HomeNavigator";
 export default function AppNavigator() {
   return (
     <NavigationContainer>
-   
-        <HomeNavigator />
-   
+      <HomeNavigator />
     </NavigationContainer>
   );
 }
