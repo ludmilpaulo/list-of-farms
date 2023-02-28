@@ -3,7 +3,12 @@ import { SafeAreaView, StyleSheet, View, ImageBackground } from "react-native";
 import tailwind from "tailwind-react-native-classnames";
 import Constants from "expo-constants";
 
-export default function Screen({children}) {
+interface IProps {
+  [x: string]: any;
+  children: React.ReactNode;
+}
+
+export default function Screen({children}: IProps) {
   return (
     <SafeAreaView >
       <ImageBackground

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import MapView, {  Camera, Polyline } from "react-native-maps";
 import {
   View,
@@ -13,6 +13,7 @@ import { useNavigation } from "@react-navigation/native";
 
 import axios from "axios";
 
+
 interface Props {
   [x: string]: any;
   route: any
@@ -26,6 +27,13 @@ interface Data{
   client_id: number;
   polygon: number;
   crop_type: string;
+  split(arg0: string): string;
+}
+
+interface LatLon{
+  split(arg0: string): string;
+  longitude : number;
+  latitude: number;
 }
 
 export default function FarmOrchardScreen({route}: Props) {
@@ -34,10 +42,10 @@ export default function FarmOrchardScreen({route}: Props) {
 
   const navigation = useNavigation<Props>();
 
-  const { id, name } = route?.params;
+  const { id } = route?.params;
 
   const [orchardData, setOrchardData] = 
-   useState<Data[]>([]);
+   useState<LatLon[]>([]);
 
 
   const access_token = "1566394169B0EJX2MGAVKVUGGKEMKZBMND9A7VCR";
@@ -56,7 +64,10 @@ export default function FarmOrchardScreen({route}: Props) {
         }
       )
       .then((res) => {
-       setOrchardData(res?.data?.results);
+        const geoReference = Object.keys(res?.data?.results).reduce((result, key) => {
+          return result.concat(res?.data?.results[key].polygon.split(" "));
+        }, []);
+       setOrchardData(geoReference);
       })
       .catch((error) => {
         console.error (error);
@@ -73,11 +84,16 @@ export default function FarmOrchardScreen({route}: Props) {
   const coordinatePoints = useMemo(() => {
 
     // filter the polygon properties from the Object
+    /**
     const geoReference = Object.keys(orchardData).reduce((result, key) => {
       return result.concat(orchardData[key].polygon.split(" "));
     }, []);
+ */
+  
 
-    const initialCoordinates = geoReference.map((coordsArr:any) => {
+   
+
+    const initialCoordinates = orchardData.map((coordsArr:LatLon) => {
       let longitude = coordsArr.split(",")[0];
       let latitude = coordsArr.split(",")[1];
       return {
@@ -96,7 +112,14 @@ export default function FarmOrchardScreen({route}: Props) {
     }
   },[coordinatePoints])
 
-  const startingPoint = coordinatePoints[0];
+
+
+  let center = {
+    latitude:  coordinatePoints ? coordinatePoints[0]?.latitude :0,
+    longitude: coordinatePoints ? coordinatePoints[0]?.longitude : 0,
+    latitudeDelta: 0.005,
+    longitudeDelta: 0.005,
+  }
   
 
 
@@ -109,12 +132,7 @@ export default function FarmOrchardScreen({route}: Props) {
         <MapView
           ref={ref}
           mapType="satellite"
-          region={{
-          latitude: coordinatePoints ? coordinatePoints.latitude : 0,
-          longitude: coordinatePoints ? coordinatePoints.longitude :0 ,
-          latitudeDelta: 0.005,
-           longitudeDelta: 0.005,
-          }}
+          region={center}
           style={tailwind`h-full w-full`}
         >
           <Polyline
