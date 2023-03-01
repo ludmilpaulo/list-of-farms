@@ -63,8 +63,6 @@ export default function FarmOrchardScreen({ route }: Props) {
       });
   };
 
-  console.log("data collected", orchardData);
-
   useEffect(() => {
     getOrchards();
   }, []);
@@ -89,6 +87,13 @@ export default function FarmOrchardScreen({ route }: Props) {
     }
   }, [coordinatePoints]);
 
+  const initialRegion = {
+    latitude: 0,
+    longitude: 0,
+    latitudeDelta: 0.005,
+    longitudeDelta: 0.005,
+  };
+
   let center = {
     latitude: coordinatePoints ? coordinatePoints[0]?.latitude : 0,
     longitude: coordinatePoints ? coordinatePoints[0]?.longitude : 0,
@@ -99,19 +104,26 @@ export default function FarmOrchardScreen({ route }: Props) {
   return (
     <View style={tailwind`flex-1`}>
       <View style={tailwind`flex-1`}>
-        <MapView
-          ref={ref}
-          mapType="satellite"
-          region={center}
-          style={tailwind`h-full w-full`}
-        >
-          <Polyline
-            coordinates={coordinatePoints}
-            strokeColor="#FFFFFF"
-            strokeColors={["#7F0000"]}
-            strokeWidth={10}
-          />
-        </MapView>
+        {center && (
+          <>
+       
+            <MapView
+              ref={ref}
+              mapType="satellite"
+              region={{
+                ...center
+              }}
+              style={tailwind`h-full w-full`}
+            >
+              <Polyline
+                coordinates={coordinatePoints}
+                strokeColor="#FFFFFF"
+                strokeColors={["#7F0000"]}
+                strokeWidth={10}
+              />
+            </MapView>
+          </>
+        )}
       </View>
 
       <TouchableOpacity
