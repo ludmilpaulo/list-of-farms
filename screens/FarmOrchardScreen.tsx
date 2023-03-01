@@ -1,50 +1,46 @@
-import React, { useEffect, useState } from "react";
-import MapView, { PROVIDER_GOOGLE, Polyline } from "react-native-maps";
-import {
-  View,
-  StyleSheet,
-  Dimensions,
-  TouchableOpacity,
-  Text,
-} from "react-native";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import MapView, { Polyline } from "react-native-maps";
+import { View, TouchableOpacity, Text } from "react-native";
 import tailwind from "tailwind-react-native-classnames";
-import {
-  useNavigation,
-  useIsFocused,
-  useRoute,
-} from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 
 import axios from "axios";
 
-export default function FarmOrchardScreen() {
-  const GOOGLE_MAPS_APIKEY = "AIzaSyBBkDvVVuQBVSMOt8wQoc_7E-2bvDh2-nw";
+interface Props {
+  [x: string]: any;
+  route: any;
+}
 
-  const isFocused = useIsFocused();
+interface Data {
+  id: number;
+  hectares: number;
+  name: string;
+  farm_id: number;
+  client_id: number;
+  polygon: number;
+  crop_type: string;
+  split(arg0: string): string;
+}
 
-  const navigation = useNavigation();
+interface LatLon {
+  split(arg0: string): string;
+  longitude: number;
+  latitude: number;
+}
 
-  const route = useRoute();
+export default function FarmOrchardScreen({ route }: Props) {
+  const ref = useRef<MapView | null>(null);
 
-  const { id, name } = route?.params;
+  const navigation = useNavigation<Props>();
 
-  const [orchardData, setOrchardData] = useState([]);
+  const { id } = route?.params;
+
+  const [orchardData, setOrchardData] = useState<LatLon[]>([]);
 
   const access_token = "1566394169B0EJX2MGAVKVUGGKEMKZBMND9A7VCR";
 
-  const [coordinatePoints, setCoordinatePoints] = useState([]);
-
-  const [startingPoint] = coordinatePoints;
-
-
-  const startCoordinates = {
-    latitude: startingPoint?.latitude,
-    longitude: startingPoint?.longitude,
-    latitudeDelta: 0.005,
-    longitudeDelta: 0.005,
-  };
-
-  const getOrchards = async () => {
-    const res = await axios
+  const getOrchards = () => {
+    axios
       .get(
         `https://sherlock.aerobotics.com/developers/orchards/?farm_id=${id}`,
         {
@@ -54,76 +50,90 @@ export default function FarmOrchardScreen() {
         }
       )
       .then((res) => {
-        setOrchardData(res.data.results);
+        const geoReference = Object.keys(res?.data?.results).reduce(
+          (result, key) => {
+            return result.concat(res?.data?.results[key].polygon.split(" "));
+          },
+          []
+        );
+        setOrchardData(geoReference);
       })
       .catch((error) => {
         console.error(error);
       });
-    return res;
-  };
-
-  const getBoundaris = async () => {
-    // filter the polygon properties from the Object
-    const geoReference = Object.keys(orchardData).reduce((result, key) => {
-      return result.concat(orchardData[key].polygon.split(" "));
-    }, []);
-
-    const lonlat = geoReference.map((coordsArr) => {
-      const longitude = coordsArr.split(",")[0];
-      const latitude = coordsArr.split(",")[1];
-      return {
-        longitude: parseFloat(longitude),
-        latitude: parseFloat(latitude),
-      };
-    }, []);
-    setCoordinatePoints(lonlat);
   };
 
   useEffect(() => {
     getOrchards();
-    getBoundaris();
   }, []);
 
+  const coordinatePoints = useMemo(() => {
+    const initialCoordinates = orchardData.map((coordsArr: LatLon) => {
+      let longitude = coordsArr.split(",")[0];
+      let latitude = coordsArr.split(",")[1];
+      return {
+        longitude: parseFloat(longitude),
+        latitude: parseFloat(latitude),
+      };
+    });
+
+    return initialCoordinates;
+  }, [orchardData]);
+
+  useEffect(() => {
+    if (coordinatePoints) {
+      console.debug(coordinatePoints[0]);
+      ref.current?.animateCamera({ center: coordinatePoints[0], zoom: 5 });
+    }
+  }, [coordinatePoints]);
+
+  const initialRegion = {
+    latitude: 0,
+    longitude: 0,
+    latitudeDelta: 0.005,
+    longitudeDelta: 0.005,
+  };
+
+  let center = {
+    latitude: coordinatePoints ? coordinatePoints[0]?.latitude : 0,
+    longitude: coordinatePoints ? coordinatePoints[0]?.longitude : 0,
+    latitudeDelta: 0.005,
+    longitudeDelta: 0.005,
+  };
+
   return (
-    <View style={tailwind`flex-1 bg-white`}>
-
-
-      <View style={styles.container}>
-        <MapView
-          mapType="satellite"
-          region={startCoordinates}
-          style={styles.map}
-        >
-          <Polyline
-            coordinates={coordinatePoints}
-            strokeColor="#FFFFFF"
-            strokeColors={["#7F0000"]}
-            strokeWidth={10}
-          />
-        </MapView>
-
-        <TouchableOpacity
-          onPress={getBoundaris}
-          style={tailwind`pb-10 w-full bg-white rounded-full items-center justify-center border border-blue-500 `}
-        >
-          <Text style={tailwind` pb-10 text-lg text-blue-500 font-bold`}>
-            Click to View {name} Orchards
-          </Text>
-        </TouchableOpacity>
+    <View style={tailwind`flex-1`}>
+      <View style={tailwind`flex-1`}>
+        {center && (
+          <>
+       
+            <MapView
+              ref={ref}
+              mapType="satellite"
+              region={{
+                ...center
+              }}
+              style={tailwind`h-full w-full`}
+            >
+              <Polyline
+                coordinates={coordinatePoints}
+                strokeColor="#FFFFFF"
+                strokeColors={["#7F0000"]}
+                strokeWidth={10}
+              />
+            </MapView>
+          </>
+        )}
       </View>
+
+      <TouchableOpacity
+        onPress={() => navigation.navigate("FarmListScreen")}
+        style={tailwind`pb-10 w-full h-20 bg-white rounded-full items-center border border-blue-500 `}
+      >
+        <Text style={tailwind` pb-10 text-lg text-blue-500 font-bold`}>
+          List of Farms
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  map: {
-    width: Dimensions.get("window").width,
-    height: Dimensions.get("window").height,
-  },
-});

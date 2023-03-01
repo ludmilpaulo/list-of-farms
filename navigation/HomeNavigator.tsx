@@ -14,11 +14,9 @@ export default function HomeNavigator() {
         headerShown: false,
       }}
     >
-      <>
-        <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} />
-        <Stack.Screen name="FarmListScreen" component={FarmListScreen} />
-        <Stack.Screen name="FarmOrchardScreen" component={FarmOrchardScreen} />
-      </>
+      <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} />
+      <Stack.Screen name="FarmListScreen" component={FarmListScreen} />
+      <Stack.Screen name="FarmOrchardScreen" component={FarmOrchardScreen} />
     </Stack.Navigator>
   );
 }

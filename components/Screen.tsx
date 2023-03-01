@@ -1,26 +1,21 @@
 import React from "react";
-import { SafeAreaView, StyleSheet, View, ImageBackground } from "react-native";
-import Constants from "expo-constants";
+import { SafeAreaView, View, ImageBackground } from "react-native";
+import tailwind from "tailwind-react-native-classnames";
 
-export default function Screen({ children, style }) {
+interface IProps {
+  [x: string]: any;
+  children: React.ReactNode;
+}
+
+export default function Screen({ children }: IProps) {
   return (
-    <SafeAreaView style={[styles.container, style]}>
+    <SafeAreaView>
       <ImageBackground
         source={require("../assets/giphy.gif")}
-        style={{ width: "100%", height: "100%", resizeMode: "cover" }}
+        style={tailwind`h-full w-full`}
       >
-        <View style={[styles.view, style]}>{children}</View>
+        <View style={tailwind`flex-1`}>{children}</View>
       </ImageBackground>
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    paddingTop: Constants.statusBarHeight,
-    flex: 1,
-  },
-  view: {
-    // flex: 1
-  },
-});

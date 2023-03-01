@@ -1,15 +1,31 @@
 import React, { useState, useEffect } from "react";
-import { View, Text } from "react-native";
 import tailwind from "tailwind-react-native-classnames";
-import { useNavigation } from "@react-navigation/native";
 import Screen from "../components/Screen";
 import axios from "axios";
-import FarmItem from "../components/FarmItem";
+import { Text, TouchableOpacity, View } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+
+interface Data {
+  name: string;
+  id: number;
+  client_id: number;
+}
+
+interface Navigator {
+  navigate(
+    arg0: string,
+    arg1: { item: Data; name: string; id: number; client_id: number }
+  ): unknown;
+  item: string;
+  name: string;
+  id: number;
+  client_id: number;
+}
 
 export default function FarmListScreen() {
-  const navigation = useNavigation();
+  const [farmData, setFarmData] = useState<Data[]>([]);
 
-  const [farmData, setFarmData] = useState();
+  const navigation = useNavigation<Navigator>();
 
   const access_token = "1566394169B0EJX2MGAVKVUGGKEMKZBMND9A7VCR";
 
@@ -32,11 +48,29 @@ export default function FarmListScreen() {
     getFarmList();
   }, []);
 
+  const handlePress = (item: Data) => {
+    navigation.navigate("FarmOrchardScreen", {
+      item: item,
+      name: item.name,
+      id: item.id,
+      client_id: item.client_id,
+    });
+  };
+
   return (
     <Screen style={tailwind`flex-1`}>
-      <View style={tailwind` pt-40 `}>
-        <FarmItem list={farmData} />
-      </View>
+      {farmData?.map((item: Data) => (
+        <View style={tailwind` pt-40`} key={item.id}>
+          <TouchableOpacity
+            onPress={() => handlePress(item)}
+            style={tailwind`h-10 w-full bg-white rounded-full items-center justify-center border border-blue-500 `}
+          >
+            <Text style={tailwind`text-lg text-blue-500 font-bold`}>
+              {item.name}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      ))}
     </Screen>
   );
 }
